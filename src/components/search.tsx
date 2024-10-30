@@ -1,9 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { getGames } from "@/app/actions"
+import { getGamesBySearchTerm } from "@/app/actions"
 import Image from "next/image"
 import { Swords } from "lucide-react"
+import Link from "next/link"
 
 function SearchResults({ results }: { results: GameSearchResult[] }) {
     function truncateText(text: string, maxLength: number) {
@@ -12,9 +13,9 @@ function SearchResults({ results }: { results: GameSearchResult[] }) {
     }
 
     return (
-        <div className="absolute top-20 flex flex-col gap-2 w-full min-h-[100px] max-h-[300px] overflow-scroll p-2 rounded-xl bg-gray-0 border-[1px] border-pink-200">
+        <div className="absolute top-20 flex flex-col gap-1 w-full min-h-[100px] max-h-[300px] overflow-scroll p-2 rounded-xl bg-gray-0 border-[1px] border-pink-200">
             {results.map(result => (
-                <div key={result.id} className="grid grid-cols-[30px_1fr] items-center gap-4">
+                <Link href={result.slug} key={result.id} className="grid grid-cols-[30px_1fr] p-1 rounded-sm items-center gap-3 hover:bg-pink-50">
                     {
                         result.cover ? (
                             <Image
@@ -32,7 +33,7 @@ function SearchResults({ results }: { results: GameSearchResult[] }) {
                     <span>
                         {truncateText(result.name, 32)}
                     </span>
-                </div>
+                </Link>
             ))}
         </div>
     )
@@ -44,7 +45,7 @@ export default function Search({ accessTokenData }: { accessTokenData: AccessTok
 
     useEffect(() => {
         const debounce = setTimeout(async () => {
-            const games = await getGames(searchTerm, accessTokenData.access_token);
+            const games = await getGamesBySearchTerm(searchTerm, accessTokenData.access_token);
 
             setGameSearchResult(games)
             console.log(games)
@@ -64,7 +65,7 @@ export default function Search({ accessTokenData }: { accessTokenData: AccessTok
             />
 
             {/* {gameSearchResult && <SearchResults results={gameSearchResult} />} */}
-            <SearchResults results={gameSearchResult} />
+            {/* <SearchResults results={gameSearchResult} /> */}
         </div>
     )
 }

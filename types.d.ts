@@ -9,22 +9,26 @@ type GameSearchResult = {
     cover: {
         url: string
     }
+    slug: string
 }
 
-type GameDetails = {
+type GameDetails = Array<{
     id: number
     name: string
-    cover: string
-    publisher: string
+    cover: { url: string }
+    involved_companies: { company: { name: string } }[]
     rating: number
-    release_dates: Date[]
-    genre: string
-    storyline: string
-    // OR
-    summary: string
-    platforms: string[]
-    screenshots: string[]
-    similarGames: string[]
+    first_release_date: number
+    genres: { name: string }[]
+    summary: string[]
+    platforms: { name: string }[]
+    screenshots: { url: string }[]
+    similarGames: { cover: { url: string } }[]
     tags: string[]
-}
+}>
 
+type GameDetailsBadge = {
+    title: string
+    value: number | string | string[]
+    icon: JSX.Element
+}
