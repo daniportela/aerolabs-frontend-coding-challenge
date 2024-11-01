@@ -55,7 +55,7 @@ export default function Search({ accessTokenData }: { accessTokenData: AccessTok
     }, [searchTerm])
     
     return (
-        <div className="relative">
+        <div className="relative max-w-[360px] lg:mx-auto">
             <input
                 className="w-full rounded-full h-10 px-4 mt-6 border-[1px] border-pink-200"
                 type="text"

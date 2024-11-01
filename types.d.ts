@@ -22,8 +22,8 @@ type GameDetails = Array<{
     genres: { name: string }[]
     summary: string[]
     platforms: { name: string }[]
-    screenshots: { url: string }[]
-    similarGames: { cover: { url: string } }[]
+    screenshots: { id: number, url: string }[]
+    similar_games: { id: number, name: string, slug: string, cover: { url: string } }[]
     tags: string[]
 }>
 
@@ -31,4 +31,11 @@ type GameDetailsBadge = {
     title: string
     value: number | string | string[]
     icon: JSX.Element
+}
+
+type LocalStorageCtxValue = {
+    addGame: (id: number, cover: string, gameName: string) => void
+    removeGame: (id: number, gameName: string) => void
+    isGameInCollection: boolean,
+    gameCollection: { id: number, cover: string }[]
 }

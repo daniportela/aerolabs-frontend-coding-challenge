@@ -24,7 +24,7 @@ export async function getGameBySlug(slug: string, accessToken: string): Promise<
             "Client-ID": process.env.TWITCH_CLIENT_ID as string,
             "Authorization": `Bearer ${accessToken}`
         },
-        "body": `fields name, cover.url, involved_companies.company.name, rating, summary, genres.name, screenshots.url, first_release_date, release_dates.human, similar_games.cover.url, platforms.name; where slug = "${slug}";`
+        "body": `fields name, cover.url, involved_companies.company.name, rating, summary, genres.name, screenshots.url, first_release_date, release_dates.human, similar_games.cover.url, similar_games.slug, similar_games.name, platforms.name; where slug = "${slug}";`
     }
 
     const response = await fetch("https://api.igdb.com/v4/games/", options)

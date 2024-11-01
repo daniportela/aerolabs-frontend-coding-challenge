@@ -8,6 +8,7 @@ import keys from '../../public/keys.png'
 import ReactQueryProvider from "@/lib/ReactQueryProvider";
 import Search from "@/components/search";
 import getAccessToken from "@/lib/getAccessToken";
+import LocalStorageProvider from "@/lib/LocalStorageProvider";
 
 const inter = Inter({
   subsets: ['latin'],
@@ -28,6 +29,7 @@ export default async function RootLayout({
 
   return (
     <ReactQueryProvider>
+      <LocalStorageProvider>
       <html lang="en">
         <body
           className={cn('py-6 px-5 antialiased bg-gradient-to-b from-pink-50 to-gray-0 to-20%', inter.className)}
@@ -44,7 +46,7 @@ export default async function RootLayout({
             }}
           />
   
-          <header className="flex items-center">
+          <header className="flex items-center w-fit lg:mx-auto">
             <Swords />
             <span
               className="bg-gradient-to-r from-violet-900 to-violet-600 font-bold text-lg bg-clip-text text-transparent leading-normal"
@@ -57,6 +59,7 @@ export default async function RootLayout({
           {children}
         </body>
       </html>
+      </LocalStorageProvider>
     </ReactQueryProvider>
   );
 }
