@@ -25,6 +25,7 @@ type GameDetails = Array<{
     screenshots: { id: number, url: string }[]
     similar_games: { id: number, name: string, slug: string, cover: { url: string } }[]
     tags: string[]
+    slug: string
 }>
 
 type GameDetailsBadge = {
@@ -34,8 +35,8 @@ type GameDetailsBadge = {
 }
 
 type LocalStorageCtxValue = {
-    addGame: (id: number, cover: string, gameName: string) => void
-    removeGame: (id: number, gameName: string) => void
+    addGame: ({ id: number, cover: string, slug: string, name: string }) => void
+    removeGame: ({ id: number, name: string }) => void
     isGameInCollection: boolean,
-    gameCollection: { id: number, cover: string }[]
+    gameCollection: { id: number, cover: string, slug: string, name: string }[]
 }

@@ -4,14 +4,31 @@ import { useLocalStorageCtx } from "@/lib/LocalStorageProvider";
 import { cn } from "@/lib/utils";
 import { CirclePlusIcon, Trash2 } from "lucide-react";
 
-export default function CollectGameButton({ gameData }: { gameData: { id: number, name: string, cover: string } }) {
-    const { addGame, removeGame, isGameInCollection } = useLocalStorageCtx();
+type GameData = {
+    id: number
+    name: string
+    cover: string
+    slug: string
+}
+
+export default function CollectGameButton({ gameData }: { gameData: GameData }) {
+    const { addGame, removeGame, gameCollection } = useLocalStorageCtx();
+
+    const isGameInCollection = gameCollection.some(game => game.id === gameData.id)
 
     function handleClick() {
         if (isGameInCollection) {
-            removeGame(gameData.id, gameData.name)
+            removeGame({
+                id: gameData.id,
+                name: gameData.name
+            })
         } else {
-            addGame(gameData.id, gameData.cover, gameData.name)
+            addGame({
+                id: gameData.id,
+                name: gameData.name,
+                cover: gameData.cover,
+                slug: gameData.slug
+            })
         }
     }
 

@@ -15,7 +15,7 @@ const LocalStorageCtx = createContext<LocalStorageCtxValue>(initialCtxValue);
 export default function LocalStorageProvider({ children }: { children: React.ReactNode }) {
     const { toast } = useToast();
 
-    const [gameCollection, setGameCollection] = useState<{ id: number, cover: string }[]>([]);
+    const [gameCollection, setGameCollection] = useState<LocalStorageCtxValue["gameCollection"]>([]);
 
     useEffect(() => {
         const localStorageCollection = JSON.parse(localStorage.getItem("gameCollection") || "") ?? []
@@ -28,22 +28,22 @@ export default function LocalStorageProvider({ children }: { children: React.Rea
 
     const isGameInCollection = gameCollection.some(item => item.id === 76);
 
-    function addGame(id: number, cover: string, gameName: string) {
-        setGameCollection((currentCollection) => [...currentCollection, { id, cover }]);
+    function addGame({ id, cover, slug, name }: { id: number, cover: string, slug: string, name: string }) {
+        setGameCollection((currentCollection) => [...currentCollection, { id, cover, slug, name }]);
 
         toast({
             title: "Game collected",
-            description: `${gameName} has been added to your collection`
+            description: `${name} has been added to your collection`
         })
     }
 
-    function removeGame(id: number, gameName: string) {
+    function removeGame({ id, name }: { id: number, name: string }) {
         setGameCollection((currentCollection) => currentCollection.filter((game) => game.id !== id));
 
         toast({
             variant: "destructive",
             title: "Game removed",
-            description: `${gameName} has been removed from your collection`
+            description: `${name} has been removed from your collection`
         })
     }
 
@@ -62,5 +62,11 @@ export default function LocalStorageProvider({ children }: { children: React.Rea
 }
 
 export function useLocalStorageCtx() {
-    return useContext(LocalStorageCtx)
+    const context = useContext(LocalStorageCtx)
+
+    if (!context) {
+        throw new Error("useGameContext must be used within a GameProvider");
+    }
+
+    return context;
 }

@@ -69,7 +69,8 @@ export default async function GameDetail({ params }: { params: { slug: string } 
                 gameData={{
                     id: gameDetails?.id,
                     cover: gameDetails?.cover.url,
-                    name: gameDetails?.name
+                    name: gameDetails?.name,
+                    slug: params.slug
                 }}
             />
 
