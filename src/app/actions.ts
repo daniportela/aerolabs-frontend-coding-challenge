@@ -7,7 +7,7 @@ export async function getGamesBySearchTerm(searchTerm: string, accessToken: stri
             "Client-ID": process.env.TWITCH_CLIENT_ID as string,
             "Authorization": `Bearer ${accessToken}`
         },
-        "body": `fields name, slug, cover.url; limit 50; search "${searchTerm}";`
+        "body": `fields name, slug, cover.url, similar_games.cover.url, similar_games.slug, similar_games.name; limit 50; search "${searchTerm}";`
     }
 
     const response = await fetch("https://api.igdb.com/v4/games/", options)
@@ -17,14 +17,14 @@ export async function getGamesBySearchTerm(searchTerm: string, accessToken: stri
     return response;
 }
 
-export async function getGameBySlug(slug: string, accessToken: string): Promise<GameDetails> {
+export async function getGameBySlug(slug: string, accessToken: string): Promise<Array<GameDetails>> {
     const options = {
         "method": "POST",
         "headers": {
             "Client-ID": process.env.TWITCH_CLIENT_ID as string,
             "Authorization": `Bearer ${accessToken}`
         },
-        "body": `fields name, cover.url, involved_companies.company.name, rating, summary, genres.name, screenshots.url, first_release_date, release_dates.human, similar_games.cover.url, similar_games.slug, similar_games.name, platforms.name; where slug = "${slug}";`
+        "body": `fields name, cover.url, involved_companies.company.name, rating, summary, genres.name, screenshots.url, first_release_date, release_dates.human, similar_games.cover.url, similar_games.slug, similar_games.name, platforms.name, slug; where slug = "${slug}";`
     }
 
     const response = await fetch("https://api.igdb.com/v4/games/", options)

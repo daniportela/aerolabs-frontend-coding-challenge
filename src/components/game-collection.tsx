@@ -5,14 +5,15 @@ import emptyCollection from "../../public/empty-collection.png"
 import { useLocalStorageCtx } from "@/lib/LocalStorageProvider";
 import { ScanSearch, Trash2 } from "lucide-react";
 import Link from "next/link";
+import GameFilters from "./game-filters";
 
 export default function GameCollection() {
     const { gameCollection, removeGame } = useLocalStorageCtx();
 
     return (
         !!gameCollection.length ? (
-            <section className="mt-3">
-                {/* Filters */}
+            <section>
+                <GameFilters />
 
                 <div className="grid grid-cols-3 gap-4">
                     {
@@ -42,7 +43,7 @@ export default function GameCollection() {
                 </div>
             </section>
         ) : (
-            <section className="h-full grid place-content-center">
+            <section className="h-[600px] grid place-content-center">
 				<Image src={emptyCollection} alt="Your game collection is empty" />
 				<h2 className="mt-6 font-bold text-center">Nothing collected yet</h2>
 				<p className="text-center">Here you will see your collected games.</p>

@@ -1,12 +1,14 @@
 "use client"
 
+import { SortOptions } from "@/components/game-filters";
 import { useToast } from "@/hooks/use-toast";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const initialCtxValue = {
-    isGameInCollection: false,
-    addGame: () => {},
+    addGame: () => [],
     removeGame: () => {},
+    sortGames: () => [],
+    getGameSuggestions: () => [],
     gameCollection: []
 }
 
@@ -26,15 +28,28 @@ export default function LocalStorageProvider({ children }: { children: React.Rea
         localStorage.setItem("gameCollection", JSON.stringify(gameCollection));
     }, [gameCollection]);
 
-    const isGameInCollection = gameCollection.some(item => item.id === 76);
+    function addGame({ id, cover, slug, name, release_date, similar_games, isQuickAdd = false }: { id: number, cover: string, slug: string, name: string, release_date: number, similar_games: { id: number, name: string, cover: { id: number, url: string }, slug: string }[], isQuickAdd?: boolean }) {
+        setGameCollection((currentCollection) => [
+            ...currentCollection,
+            {
+                id,
+                cover,
+                slug,
+                name,
+                release_date,
+                similar_games,
+                added_at: new Date().toISOString()
+            }
+        ]);
 
-    function addGame({ id, cover, slug, name }: { id: number, cover: string, slug: string, name: string }) {
-        setGameCollection((currentCollection) => [...currentCollection, { id, cover, slug, name }]);
+        // Prevent toast from firing when quick-adding
+        if (!isQuickAdd) {
+            toast({
+                title: "Game collected",
+                description: `${name} has been added to your collection`
+            })
+        }
 
-        toast({
-            title: "Game collected",
-            description: `${name} has been added to your collection`
-        })
     }
 
     function removeGame({ id, name }: { id: number, name: string }) {
@@ -47,10 +62,42 @@ export default function LocalStorageProvider({ children }: { children: React.Rea
         })
     }
 
+    function sortGames(sortOption: SortOptions) {
+        const sortedCollection = [...gameCollection].sort((a, b) => {
+            switch (sortOption) {
+                case SortOptions.LAST_ADDED:
+                    return new Date(a.added_at).getTime() - new Date(b.added_at).getTime();
+                case SortOptions.NEWEST:
+                    return b.release_date - a.release_date;
+                case SortOptions.OLDEST:
+                    return a.release_date - b.release_date;
+                default:
+                    return 0;
+            }
+        })
+
+        setGameCollection(sortedCollection);
+    }
+
+    function getGameSuggestions() {
+        const randomSuggestions = gameCollection.reduce((acc, curr) => {
+            if (acc.length >= 10) return acc
+
+            const randomSuggestionIdx = Math.floor(Math.random() * curr.similar_games.length);
+
+            acc.push(curr.similar_games[randomSuggestionIdx])
+
+            return acc
+        }, [] as Array<{ id: number, name: string, slug: string, cover: { id: number, url: string } }>)
+
+        return randomSuggestions
+    }
+
     const localStorageCtxValue: LocalStorageCtxValue = {
         addGame,
         removeGame,
-        isGameInCollection,
+        sortGames,
+        getGameSuggestions,
         gameCollection
     }
 

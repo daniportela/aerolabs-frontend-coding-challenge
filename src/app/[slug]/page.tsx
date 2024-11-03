@@ -10,8 +10,6 @@ import Link from "next/link";
 export default async function GameDetail({ params }: { params: { slug: string } }) {
     const [gameDetails] = await getGameBySlug(params.slug, "qphbqm52buuxwc43qt65kh7te32di3")
 
-    // console.log("URL", gameDetails);
-
     const date = new Date(gameDetails?.first_release_date * 1000);
 
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -65,14 +63,7 @@ export default async function GameDetail({ params }: { params: { slug: string } 
                 </div>
             </main>
 
-            <CollectGameButton
-                gameData={{
-                    id: gameDetails?.id,
-                    cover: gameDetails?.cover.url,
-                    name: gameDetails?.name,
-                    slug: params.slug
-                }}
-            />
+            <CollectGameButton gameData={gameDetails} />
 
             <GameDetailsBadges details={detailBadges} />
 

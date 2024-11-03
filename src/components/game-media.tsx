@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/carousel"
 import Image from "next/image"
 
-type Media = GameDetails[0]["screenshots"]
+type Media = GameDetails["screenshots"]
 
 export default function GameMediaCarousel({ media }: { media: Media }) {
   return (
