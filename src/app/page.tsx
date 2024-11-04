@@ -1,3 +1,4 @@
+// Components
 import GameCollection from "@/components/game-collection";
 
 export default async function Home() {	

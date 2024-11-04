@@ -28,7 +28,7 @@ export default function LocalStorageProvider({ children }: { children: React.Rea
         localStorage.setItem("gameCollection", JSON.stringify(gameCollection));
     }, [gameCollection]);
 
-    function addGame({ id, cover, slug, name, release_date, similar_games, isQuickAdd = false }: { id: number, cover: string, slug: string, name: string, release_date: number, similar_games: { id: number, name: string, cover: { id: number, url: string }, slug: string }[], isQuickAdd?: boolean }) {
+    function addGame({ id, cover, slug, name, first_release_date, similar_games }: Pick<GameDetails, "id" | "name" | "cover" | "slug" | "first_release_date" | "similar_games">) {
         setGameCollection((currentCollection) => [
             ...currentCollection,
             {
@@ -36,19 +36,16 @@ export default function LocalStorageProvider({ children }: { children: React.Rea
                 cover,
                 slug,
                 name,
-                release_date,
+                first_release_date,
                 similar_games,
                 added_at: new Date().toISOString()
             }
         ]);
 
-        // Prevent toast from firing when quick-adding
-        if (!isQuickAdd) {
-            toast({
-                title: "Game collected",
-                description: `${name} has been added to your collection`
-            })
-        }
+        toast({
+            title: "Game collected",
+            description: `${name} has been added to your collection`
+        })
 
     }
 
@@ -68,9 +65,9 @@ export default function LocalStorageProvider({ children }: { children: React.Rea
                 case SortOptions.LAST_ADDED:
                     return new Date(a.added_at).getTime() - new Date(b.added_at).getTime();
                 case SortOptions.NEWEST:
-                    return b.release_date - a.release_date;
+                    return b.first_release_date - a.first_release_date;
                 case SortOptions.OLDEST:
-                    return a.release_date - b.release_date;
+                    return a.first_release_date - b.first_release_date;
                 default:
                     return 0;
             }
@@ -88,7 +85,7 @@ export default function LocalStorageProvider({ children }: { children: React.Rea
             acc.push(curr.similar_games[randomSuggestionIdx])
 
             return acc
-        }, [] as Array<{ id: number, name: string, slug: string, cover: { id: number, url: string } }>)
+        }, [] as Array<ReducedGameDetails>)
 
         return randomSuggestions
     }
@@ -112,7 +109,7 @@ export function useLocalStorageCtx() {
     const context = useContext(LocalStorageCtx)
 
     if (!context) {
-        throw new Error("useGameContext must be used within a GameProvider");
+        throw new Error("useLocalStorageCtx must be used within a LocalStorageProvider");
     }
 
     return context;

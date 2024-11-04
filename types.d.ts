@@ -3,31 +3,50 @@ type AccessTokenData = {
     expires_in: number
 }
 
-type GameSearchResult = {
+type Cover = {
+    url: string
+}
+
+type InvolvedCompany = {
+    company: {
+        id: number
+        name: string
+    }
+}
+
+type Genre = {
     id: number
     name: string
-    cover: {
-        url: string
-    }
-    similar_games: { id: number, name: string, slug: string, cover: { url: string } }[]
-    slug: string
 }
+
+type Platform = {
+    id: number
+    name: string
+}
+
+type Screenshot = {
+    id: number
+    url: string
+}
+
+type SimilarGame = Pick<GameDetails, "id" | "name" | "slug" | "cover" | "first_release_date" | "similar_games">
 
 type GameDetails = {
     id: number
     name: string
-    cover: { url: string }
-    involved_companies: { company: { name: string } }[]
+    cover: Cover
+    involved_companies: Array<InvolvedCompany>
     rating: number
     first_release_date: number
-    genres: { name: string }[]
-    summary: string[]
-    platforms: { name: string }[]
-    screenshots: { id: number, url: string }[]
-    similar_games: { id: number, name: string, slug: string, cover: { url: string } }[]
-    tags: string[]
+    genres: Array<Genre>
+    summary: Array<string>
+    platforms: Array<Platform>
+    screenshots: Array<Screenshot>
+    similar_games: Array<SimilarGame>
     slug: string
 }
+
+type ReducedGameDetails = Pick<GameDetails, "id" | "name" | "slug" | "cover" | "first_release_date" | "similar_games">
 
 type GameDetailsBadge = {
     title: string
@@ -36,9 +55,9 @@ type GameDetailsBadge = {
 }
 
 type LocalStorageCtxValue = {
-    addGame: ({ id: number, cover: string, slug: string, name: string, release_date: number, similar_games, isQuickAdd: boolean }) => void
+    addGame: ({ id, cover, slug, name, release_date, similar_games }: Pick<GameDetails, "id" | "name" | "cover" | "slug" | "first_release_date" | "similar_games">) => void
     removeGame: ({ id: number, name: string }) => void
     sortGames: (sortOption: SortOptions) => void
-    getGameSuggestions: () => { id: number, name: string, cover: { id: number, url: string }, slug: string }[]
-    gameCollection: { id: number, cover: string, slug: string, name: string, added_at: string, release_date: number, similar_games: { id: number, name: string, cover: { id: number, url: string }, slug: string }[] }[]
+    getGameSuggestions: () => Array<ReducedGameDetails>
+    gameCollection: Array<{ added_at: string } & ReducedGameDetails>
 }

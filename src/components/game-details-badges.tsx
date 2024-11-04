@@ -1,3 +1,4 @@
+// Components
 import { Badge } from "./ui/badge";
 
 export default function GameDetailsBadges({ details }: { details: GameDetailsBadge[] }) {

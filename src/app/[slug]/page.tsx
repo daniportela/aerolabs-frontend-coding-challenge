@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { getGameBySlug } from "../actions"
+import { getGamesBySlugOrSearchTerm } from "../actions"
 import CollectGameButton from "@/components/collect-game-button";
 import { Toaster } from "@/components/ui/toaster";
 import GameDetailsBadges from "@/components/game-details-badges";
@@ -8,7 +8,7 @@ import GameMediaCarousel from "@/components/game-media";
 import Link from "next/link";
 
 export default async function GameDetail({ params }: { params: { slug: string } }) {
-    const [gameDetails] = await getGameBySlug(params.slug, "qphbqm52buuxwc43qt65kh7te32di3")
+    const [gameDetails] = await getGamesBySlugOrSearchTerm({ type: "slug", query: params.slug}, "qphbqm52buuxwc43qt65kh7te32di3")
 
     const date = new Date(gameDetails?.first_release_date * 1000);
 

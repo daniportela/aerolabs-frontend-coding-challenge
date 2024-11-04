@@ -1,6 +1,9 @@
-import { useLocalStorageCtx } from "@/lib/LocalStorageProvider"
+// Utils
 import { cn } from "@/lib/utils";
+
+// Hooks
 import { useRef } from "react";
+import { useLocalStorageCtx } from "@/lib/LocalStorageProvider"
 
 export enum SortOptions {
     LAST_ADDED = "Last added",

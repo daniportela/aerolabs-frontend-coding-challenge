@@ -1,15 +1,24 @@
+// Styles
+import "./globals.css";
+
+// Components
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
 import { Swords } from "lucide-react";
-import { cn } from "@/lib/utils";
 import Image from "next/image";
 import keys from '../../public/keys.png'
-import ReactQueryProvider from "@/lib/ReactQueryProvider";
 import Search from "@/components/search";
-import getAccessToken from "@/lib/getAccessToken";
-import LocalStorageProvider from "@/lib/LocalStorageProvider";
 import Link from "next/link";
+
+// Hooks & Context
+import ReactQueryProvider from "@/lib/ReactQueryProvider";
+import AccessTokenProvider from "@/lib/AccessTokenProvider";
+import LocalStorageProvider from "@/lib/LocalStorageProvider";
+
+// Utils
+import getAccessToken from "@/lib/getAccessToken";
+import { cn } from "@/lib/utils";
+
 
 const inter = Inter({
   subsets: ['latin'],
@@ -30,6 +39,7 @@ export default async function RootLayout({
 
   return (
     <ReactQueryProvider>
+      <AccessTokenProvider token={tokenData}>
       <LocalStorageProvider>
         <html lang="en">
           <body
@@ -58,11 +68,12 @@ export default async function RootLayout({
               </span>
             </header>
 
-            <Search accessTokenData={tokenData} />
+            <Search />
             {children}
           </body>
         </html>
       </LocalStorageProvider>
+      </AccessTokenProvider>
     </ReactQueryProvider>
   );
 }

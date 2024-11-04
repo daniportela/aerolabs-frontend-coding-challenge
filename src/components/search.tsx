@@ -1,53 +1,54 @@
 "use client"
 
-import { useEffect, useRef, useState, useTransition } from "react"
-import { getGamesBySearchTerm } from "@/app/actions"
+// Components
 import Image from "next/image"
-import { SearchIcon, Swords } from "lucide-react"
 import Link from "next/link"
+import { SearchIcon, Swords } from "lucide-react"
 import { AnimatePresence, motion } from "framer-motion"
 import { Spinner } from "./Spinner"
+
+// Hooks
+import { useEffect, useRef, useState, useTransition } from "react"
 import { useLocalStorageCtx } from "@/lib/LocalStorageProvider"
+import { useAccessToken } from "@/lib/AccessTokenProvider"
+
+// Actions
+import { getGamesBySlugOrSearchTerm } from "@/app/actions"
+
+// Utils
 import { cn } from "@/lib/utils"
-import CollectGameButton from "./collect-game-button"
 
-type SearchResultEntry = GameDetails | Partial<GameDetails>
-
-function SearchResultEntry({ entry }: { entry: SearchResultEntry }) {
+function SearchResultEntry({ entry }: { entry: ReducedGameDetails }) {
     function truncateText(text: string, maxLength: number) {
         if (text.length <= maxLength) return text;
         return text.slice(0, maxLength) + '...';
     }
 
     return (
-        <div className="grid grid-cols-[1fr_20px]">
-            <Link href={entry.slug!} key={entry.id} className="grid grid-cols-[30px_1fr_20px] p-1 rounded-sm items-center gap-3 hover:bg-pink-50">
-                {
-                    entry.cover ? (
-                        <Image
-                            width={30}
-                            height={30}
-                            src={`https:${entry.cover.url}`} alt={entry.name!}
-                            style={{ borderRadius: '4px' }}
-                        />
-                    ) : (
-                        <div className="w-[30px] h-[30px] grid place-content-center border-[1px] border-pink-50 rounded-md">
-                            <Swords size={18} />
-                        </div>
-                    )
-                }
+        <Link href={entry.slug!} className="grid grid-cols-[30px_1fr] p-1 rounded-sm items-center gap-3 hover:bg-pink-50">
+            {
+                entry.cover ? (
+                    <Image
+                        width={30}
+                        height={30}
+                        src={`https:${entry.cover.url}`} alt={entry.name!}
+                        style={{ borderRadius: '4px' }}
+                    />
+                ) : (
+                    <div className="w-[30px] h-[30px] grid place-content-center border-[1px] border-pink-50 rounded-md">
+                        <Swords size={18} />
+                    </div>
+                )
+            }
 
-                <span>
-                    {truncateText(entry.name!, 28)}
-                </span>
-            </Link>
-            
-            <CollectGameButton gameData={entry} buttonType="quick_add" />
-        </div>
+            <span>
+                {truncateText(entry.name!, 30)}
+            </span>
+        </Link>
     )
 }
 
-function SearchResults({ results, isPending }: { results: GameSearchResult[], isPending: boolean }) {
+function SearchResults({ results, isPending }: { results: Array<ReducedGameDetails>, isPending: boolean }) {
     const { getGameSuggestions, gameCollection } = useLocalStorageCtx();
 
     const gameSuggestions = getGameSuggestions();
@@ -57,7 +58,7 @@ function SearchResults({ results, isPending }: { results: GameSearchResult[], is
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={cn("absolute top-14 z-10 flex flex-col gap-1 w-full min-h-[150px] max-h-[300px] overflow-scroll p-2 rounded-xl bg-gray-0 border border-pink-200", isPending || !results.length && "items-center justify-center")}
+            className={cn("absolute top-14 z-10 flex flex-col gap-1 w-full min-h-[150px] max-h-[300px] overflow-scroll p-2 rounded-xl bg-gray-0 border border-pink-200", isPending && "items-center justify-center")}
         >
             {
                 isPending ? (
@@ -65,15 +66,15 @@ function SearchResults({ results, isPending }: { results: GameSearchResult[], is
                 ) : (
                     !!results.length ? (
                         results.map(result => (
-                            <SearchResultEntry entry={result} />
+                            <SearchResultEntry key={result.id} entry={result} />
                         ))
                     ) : (
                         !!gameCollection.length ? (
                             gameSuggestions.map(suggestion => (
-                                <SearchResultEntry entry={suggestion} />
+                                <SearchResultEntry key={suggestion.id} entry={suggestion} />
                             ))
                         ) : (
-                            <div className="text-center">
+                            <div className="text-center my-auto">
                                 <span className="font-bold">No suggestions to show</span>
                                 <p className="text-sm text-gray-500 w-[25ch] mx-auto">Add more games to your collection to see suggestions.</p>
                             </div>
@@ -85,10 +86,12 @@ function SearchResults({ results, isPending }: { results: GameSearchResult[], is
     )
 }
 
-export default function Search({ accessTokenData }: { accessTokenData: AccessTokenData }) {
+export default function Search() {
     const [displayResults, setDisplayResults] = useState<boolean>(false);
-    const [gameSearchResult, setGameSearchResult] = useState<GameSearchResult[]>([]);
+    const [gameSearchResult, setGameSearchResult] = useState<Array<ReducedGameDetails>>([]);
     const [isPending, startTransition] = useTransition()
+
+    const accessTokenData = useAccessToken();
 
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -99,7 +102,7 @@ export default function Search({ accessTokenData }: { accessTokenData: AccessTok
 
       timeoutRef.current = setTimeout(() => {
         startTransition(async () => {
-            const gamesBySearchTerm = await getGamesBySearchTerm(e.target.value, accessTokenData.access_token);
+            const gamesBySearchTerm = await getGamesBySlugOrSearchTerm({ type: "searchTerm", query: e.target.value }, accessTokenData.access_token);
             setGameSearchResult(gamesBySearchTerm);
         })
       }, 500);
