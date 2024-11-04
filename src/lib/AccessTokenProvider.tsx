@@ -1,12 +1,22 @@
 "use client"
 
-import { createContext, PropsWithChildren, useContext } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import getAccessToken from "./getAccessToken";
 
 const AccessTokenCtx = createContext({ access_token: "", expires_in: 0 });
 
-export default function AccessTokenProvider({ token, children }: PropsWithChildren<{ token: AccessTokenData }>) {
+export default function AccessTokenProvider({ children }: { children: React.ReactNode }) {
+    const [tokenData, setTokenData] = useState<AccessTokenData>({ access_token: "", expires_in: 0 });
+
+    useEffect(() => {
+        (async () => {
+            const tokenResponse = await getAccessToken();
+            setTokenData(tokenResponse)
+        })();
+    }, [])
+
     return (
-        <AccessTokenCtx.Provider value={token}>
+        <AccessTokenCtx.Provider value={tokenData}>
             { children }
         </AccessTokenCtx.Provider>
     )
