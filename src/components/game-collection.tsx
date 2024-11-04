@@ -20,7 +20,7 @@ export default function GameCollection() {
                 <div className="grid grid-cols-3 gap-4">
                     {
                         gameCollection.map(game => (
-                            <GameCard game={game} />
+                            <GameCard key={game.id} game={game} />
                         ))
                     }
                 </div>
