@@ -17,13 +17,14 @@ export default function GameMediaCarousel({ media }: { media: Media }) {
     <Carousel className="w-full mt-2 mx-auto">
       <CarouselContent className="-ml-1">
         {media?.map((item) => (
-          <CarouselItem key={item.id} className="pl-1 basis-1/4 md:basis-1/2 lg:basis-1/3">
+          <CarouselItem key={item.id} className="pl-1 basis-1/4">
             <div className="p-1">
               <Card>
                 <CardContent className="relative flex aspect-square items-center justify-center p-6">
                   <Image
                     src={`https:${item.url}`}
-                    fill 
+                    fill
+                    sizes="(max-width: 768px) 150px, (max-width: 1024px) 300px"
                     alt="Media gallery"
                     className="rounded-md"
                 />

@@ -74,7 +74,11 @@ const config: Config = {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+		gridTemplateColumns: {
+			"3": "repeat(3, minmax(0, 1fr))",
+			"4": "repeat(4, minmax(100px, 1fr))",
+		}
   	}
   },
   plugins: [require("tailwindcss-animate")],

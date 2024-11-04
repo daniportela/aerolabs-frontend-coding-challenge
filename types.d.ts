@@ -29,7 +29,7 @@ type Screenshot = {
     url: string
 }
 
-type SimilarGame = Pick<GameDetails, "id" | "name" | "slug" | "cover" | "first_release_date" | "similar_games">
+type SimilarGame = Pick<GameDetails, "id" | "name" | "slug" | "cover">
 
 type GameDetails = {
     id: number
@@ -39,7 +39,7 @@ type GameDetails = {
     rating: number
     first_release_date: number
     genres: Array<Genre>
-    summary: Array<string>
+    summary: string
     platforms: Array<Platform>
     screenshots: Array<Screenshot>
     similar_games: Array<SimilarGame>
@@ -58,6 +58,6 @@ type LocalStorageCtxValue = {
     addGame: ({ id, cover, slug, name, release_date, similar_games }: Pick<GameDetails, "id" | "name" | "cover" | "slug" | "first_release_date" | "similar_games">) => void
     removeGame: ({ id: number, name: string }) => void
     sortGames: (sortOption: SortOptions) => void
-    getGameSuggestions: () => Array<ReducedGameDetails>
+    getGameSuggestions: () => Array<SimilarGame>
     gameCollection: Array<{ added_at: string } & ReducedGameDetails>
 }

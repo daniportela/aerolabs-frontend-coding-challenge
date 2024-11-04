@@ -16,8 +16,6 @@ export async function getGamesBySlugOrSearchTerm(searchOptions: { query: string,
         "similar_games.cover.url",
         "similar_games.slug",
         "similar_games.name",
-        "similar_games.first_release_date",
-        "similar_games.similar_games",
         "platforms.name",
         "slug"
     ].join(", ")

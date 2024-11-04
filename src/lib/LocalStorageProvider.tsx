@@ -77,17 +77,24 @@ export default function LocalStorageProvider({ children }: { children: React.Rea
     }
 
     function getGameSuggestions() {
-        const randomSuggestions = gameCollection.reduce((acc, curr) => {
-            if (acc.length >= 10) return acc
+        const allSuggestions = new Set<SimilarGame>();
+        
+        // Collect all similar games from each game in the collection
+        for (const game of gameCollection) {
+            for (const similarGame of game.similar_games) {
+                const existsInSuggestions = Array.from(allSuggestions).some(obj => obj.id === similarGame.id)
 
-            const randomSuggestionIdx = Math.floor(Math.random() * curr.similar_games.length);
-
-            acc.push(curr.similar_games[randomSuggestionIdx])
-
-            return acc
-        }, [] as Array<ReducedGameDetails>)
-
-        return randomSuggestions
+                if (!existsInSuggestions) {
+                    allSuggestions.add(similarGame);
+                }
+            }
+        }
+        
+        // Convert the set to an array and shuffle it to randomize the suggestions
+        const shuffledSuggestions = Array.from(allSuggestions).sort(() => Math.random() - 0.5);
+        
+        // Return up to 10 unique suggestions
+        return shuffledSuggestions.slice(0, 10);
     }
 
     const localStorageCtxValue: LocalStorageCtxValue = {

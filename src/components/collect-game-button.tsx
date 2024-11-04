@@ -36,7 +36,7 @@ export default function CollectGameButton({ gameData }: { gameData: ReducedGameD
 
     return (
         <button
-            className={cn("flex items-center justify-center gap-2 w-full text-lg text-center font-bold py-2 rounded-full my-8 border-2 border-violet-900 hover:bg-violet-900 hover:text-gray-0 duration-200", toggledClassNames)}
+            className={cn("flex items-center justify-center gap-2 w-full md:w-fit px-8 text-lg text-center font-bold py-2 rounded-full my-8 border-2 border-violet-900 hover:bg-violet-900 hover:text-gray-0 duration-200", toggledClassNames)}
             onClick={handleClick}
         >
             {

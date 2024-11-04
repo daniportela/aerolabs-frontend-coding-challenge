@@ -18,7 +18,7 @@ import { getGamesBySlugOrSearchTerm } from "@/app/actions"
 // Utils
 import { cn } from "@/lib/utils"
 
-function SearchResultEntry({ entry }: { entry: ReducedGameDetails }) {
+function SearchResultEntry({ entry }: { entry: SimilarGame }) {
     function truncateText(text: string, maxLength: number) {
         if (text.length <= maxLength) return text;
         return text.slice(0, maxLength) + '...';
@@ -48,7 +48,7 @@ function SearchResultEntry({ entry }: { entry: ReducedGameDetails }) {
     )
 }
 
-function SearchResults({ results, isPending }: { results: Array<ReducedGameDetails>, isPending: boolean }) {
+function SearchResults({ results, isPending }: { results: Array<SimilarGame>, isPending: boolean }) {
     const { getGameSuggestions, gameCollection } = useLocalStorageCtx();
 
     const gameSuggestions = getGameSuggestions();
@@ -58,7 +58,11 @@ function SearchResults({ results, isPending }: { results: Array<ReducedGameDetai
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={cn("absolute top-14 z-10 flex flex-col gap-1 w-full min-h-[150px] max-h-[300px] overflow-scroll p-2 rounded-xl bg-gray-0 border border-pink-200", isPending && "items-center justify-center")}
+            className={cn(
+                "absolute top-14 z-20 flex flex-col gap-1 w-full min-h-[150px] max-h-[300px] overflow-y-scroll p-2 rounded-xl bg-gray-0 border border-pink-200",
+                isPending && "items-center justify-center",
+                "styled-scrollbar"
+            )}
         >
             {
                 isPending ? (
@@ -117,7 +121,7 @@ export default function Search() {
     }, []);
     
     return (
-        <div className="relative max-w-[360px] lg:mx-auto">
+        <div className="relative max-w-[360px] md:mx-auto">
             <div className="w-full flex items-center gap-2 rounded-full px-4 bg-gray-0 h-10 mt-6 border border-pink-200">
                 <SearchIcon className="stroke-gray-500" size={20} />
 

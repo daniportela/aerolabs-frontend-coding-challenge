@@ -48,6 +48,7 @@ export default async function RootLayout({
             <Image
               src={keys}
               alt="keys"
+              priority={true}
               style={{
                 position: "absolute",
                 top: 0,
@@ -57,7 +58,7 @@ export default async function RootLayout({
               }}
             />
 
-            <header className="flex items-center w-fit lg:mx-auto">
+            <header className="flex items-center w-fit md:mx-auto">
               <Link href="/">
                 <Swords />
               </Link>
