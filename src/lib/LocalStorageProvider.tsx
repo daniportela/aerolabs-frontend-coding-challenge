@@ -20,8 +20,13 @@ export default function LocalStorageProvider({ children }: { children: React.Rea
     const [gameCollection, setGameCollection] = useState<LocalStorageCtxValue["gameCollection"]>([]);
 
     useEffect(() => {
-        const localStorageCollection = JSON.parse(localStorage.getItem("gameCollection") || "") ?? []
-        setGameCollection(localStorageCollection);
+        localStorage.setItem("gameCollection", JSON.stringify([]))
+
+        const localStorageCollection = JSON.parse(localStorage.getItem("gameCollection") || "")
+
+        if (localStorageCollection) {
+            setGameCollection(localStorageCollection);
+        }
     }, [])
 
     useEffect(() => {
