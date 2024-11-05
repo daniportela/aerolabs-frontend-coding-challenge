@@ -56,7 +56,7 @@ type GameDetailsBadge = {
 
 type LocalStorageCtxValue = {
     addGame: ({ id, cover, slug, name, release_date, similar_games }: Pick<GameDetails, "id" | "name" | "cover" | "slug" | "first_release_date" | "similar_games">) => void
-    removeGame: ({ id: number, name: string, quickRemove: boolean }) => void
+    removeGame: ({ id, name, quickRemove }: { id: number, name: string, quickRemove?: boolean } ) => void
     sortGames: (sortOption: SortOptions) => void
     getGameSuggestions: () => Array<SimilarGame>
     gameCollection: Array<{ added_at: string } & ReducedGameDetails>
