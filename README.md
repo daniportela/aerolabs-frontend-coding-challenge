@@ -16,7 +16,7 @@ If you want to test locally, simply ```clone``` the repo, ```cd``` into the dire
 
 ## Features
 
-##### 🦾 Fully responsive & accessible
+### 🦾 Fully responsive & accessible
 ![Mobile preview 1](./readme-media/responsive-1.png)
 
 ![Mobile preview 2](./readme-media/responsive-2.png)
@@ -24,17 +24,17 @@ If you want to test locally, simply ```clone``` the repo, ```cd``` into the dire
 ![Desktop preview](./readme-media/responsive-3.png)
 
 
-##### 🎬 Animations
+### 🎬 Animations
 ![Collection animation](./readme-media/game-collection.gif)
 
 
-##### 🌎 Custom game suggestions based on collected games
+### 🌎 Custom game suggestions based on collected games
 ![No suggestions](./readme-media/empty-suggestions.png)
 
 ![Suggestions](./readme-media/suggestions.png)
 
 
-##### 👆 Interaction feedback: loading, empty, error states & toast notifications
+### 👆 Interaction feedback: loading, empty, error states & toast notifications
 ![Not found](./readme-media/not-found.png)
 
 ![Loading](./readme-media/loading.png)
@@ -42,7 +42,7 @@ If you want to test locally, simply ```clone``` the repo, ```cd``` into the dire
 ![Toast](./readme-media/toast.png)
 
 
-##### 🔍 SSR wherever possible. SEO friendly (good Web Vitals score) and performant
+### 🔍 SSR wherever possible. SEO friendly (good Web Vitals score) and performant
 > In this case SEO is a bit lower because robots.txt is set to ```x-robots-tag: noindex``` on Vercel Preview deployments.
 
 ![Core Web Vitals](./readme-media/web-vitals.png)
