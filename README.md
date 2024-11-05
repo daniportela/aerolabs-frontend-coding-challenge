@@ -50,5 +50,5 @@ If you want to test locally, simply ```clone``` the repo, ```cd``` into the dire
 
 ## Caveats & things to improve
 * Image quality is low, given that game covers are of type thumbnail. Can be fixed by querying for individual images, but the aim of the challenge is to solve it using only one endpoint.
-* Local Storage + SSR don't work well together. Local Storage doesn't exist in the server, so the workaround is to access it only on the client side (i.e: LocalStorageProvider not only has to be a "use client" component, but also needs to have SSR manually disabled with 'next/dynamic' import).
+* Local Storage + SSR don't work well together. Local Storage doesn't exist in the server, so the workaround is to access it only on the client side (i.e: LocalStorageProvider not only has to be a "use client" component, but also needs to have SSR manually disabled with 'next/dynamic' import). Of course, working with a DB would solve all of this issues. It's just a thing to keep in mind when working with Local Storage + SSR.
 * There's room for a few more animations.
