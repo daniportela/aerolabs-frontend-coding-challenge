@@ -17,17 +17,14 @@ const LocalStorageCtx = createContext<LocalStorageCtxValue>(initialCtxValue);
 export default function LocalStorageProvider({ children }: { children: React.ReactNode }) {
     const { toast } = useToast();
 
-    const [gameCollection, setGameCollection] = useState<LocalStorageCtxValue["gameCollection"]>([]);
-
-    useEffect(() => {
-        localStorage.setItem("gameCollection", JSON.stringify([]))
-
-        const localStorageCollection = JSON.parse(localStorage.getItem("gameCollection") || "")
-
-        if (localStorageCollection) {
-            setGameCollection(localStorageCollection);
+    const [gameCollection, setGameCollection] = useState<LocalStorageCtxValue["gameCollection"]>(() => {
+        if (typeof window !== "undefined") {
+            const localStorageCollection = localStorage.getItem("gameCollection");
+            return localStorageCollection ? JSON.parse(localStorageCollection) : []
         }
-    }, [])
+
+        return []
+    });
 
     useEffect(() => {
         localStorage.setItem("gameCollection", JSON.stringify(gameCollection));
@@ -54,14 +51,16 @@ export default function LocalStorageProvider({ children }: { children: React.Rea
 
     }
 
-    function removeGame({ id, name }: { id: number, name: string }) {
+    function removeGame({ id, name, quickRemove = false }: { id: number, name: string, quickRemove?: boolean }) {
         setGameCollection((currentCollection) => currentCollection.filter((game) => game.id !== id));
 
-        toast({
-            variant: "destructive",
-            title: "Game removed",
-            description: `${name} has been removed from your collection`
-        })
+        if (!quickRemove) {
+            toast({
+                variant: "destructive",
+                title: "Game removed",
+                description: `${name} has been removed from your collection`
+            })
+        }
     }
 
     function sortGames(sortOption: SortOptions) {
@@ -83,8 +82,7 @@ export default function LocalStorageProvider({ children }: { children: React.Rea
 
     function getGameSuggestions() {
         const allSuggestions = new Set<SimilarGame>();
-        
-        // Collect all similar games from each game in the collection
+
         for (const game of gameCollection) {
             for (const similarGame of game.similar_games) {
                 const existsInSuggestions = Array.from(allSuggestions).some(obj => obj.id === similarGame.id)
@@ -95,7 +93,6 @@ export default function LocalStorageProvider({ children }: { children: React.Rea
             }
         }
         
-        // Convert the set to an array and shuffle it to randomize the suggestions
         const shuffledSuggestions = Array.from(allSuggestions).sort(() => Math.random() - 0.5);
         
         // Return up to 10 unique suggestions

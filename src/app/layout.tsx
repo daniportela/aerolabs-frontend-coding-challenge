@@ -9,11 +9,12 @@ import Image from "next/image";
 import keys from '../../public/keys.png'
 import Search from "@/components/search";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 
 // Hooks & Context
 import ReactQueryProvider from "@/lib/ReactQueryProvider";
 import AccessTokenProvider from "@/lib/AccessTokenProvider";
-import LocalStorageProvider from "@/lib/LocalStorageProvider";
+const LocalStorageProvider = dynamic(() => import("@/lib/LocalStorageProvider"), { ssr: false });
 
 // Utils
 import { cn } from "@/lib/utils";
@@ -37,11 +38,10 @@ export default async function RootLayout({
   return (
     <ReactQueryProvider>
       <AccessTokenProvider>
-        <LocalStorageProvider>
           <html lang="en">
             <body
               className={cn('py-6 px-5 antialiased bg-gradient-to-b from-pink-50 to-gray-0 to-20% bg-no-repeat', inter.className)}
-            >
+              >
               <Image
                 src={keys}
                 alt="keys"
@@ -53,24 +53,25 @@ export default async function RootLayout({
                   width: "min(50%, 400px)",
                   zIndex: "-1"
                 }}
-              />
+                />
 
-              <header className="flex items-center w-fit md:mx-auto">
-                <Link href="/">
-                  <Swords />
+              <header className="flex gap-2 items-center w-fit md:mx-auto">
+                <Link href="/" className="bg-gradient-to-tr from-violet-900 to-violet-600 rounded-lg p-2">
+                  <Swords size={20} className="stroke-gray-0" />
                 </Link>
                 <span
                   className="bg-gradient-to-r from-violet-900 to-violet-600 font-bold text-lg bg-clip-text text-transparent leading-normal"
-                >
+                  >
                   Gaming Haven Z
                 </span>
               </header>
 
-              <Search />
-              {children}
+                <LocalStorageProvider>
+                  <Search />
+                  {children}
+                </LocalStorageProvider>
             </body>
           </html>
-        </LocalStorageProvider>
       </AccessTokenProvider>
     </ReactQueryProvider>
   );

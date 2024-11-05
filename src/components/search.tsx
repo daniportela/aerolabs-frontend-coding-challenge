@@ -17,6 +17,7 @@ import { getGamesBySlugOrSearchTerm } from "@/app/actions"
 
 // Utils
 import { cn } from "@/lib/utils"
+import { usePathname } from "next/navigation"
 
 function SearchResultEntry({ entry }: { entry: SimilarGame }) {
     function truncateText(text: string, maxLength: number) {
@@ -74,9 +75,12 @@ function SearchResults({ results, isPending }: { results: Array<SimilarGame>, is
                         ))
                     ) : (
                         !!gameCollection.length ? (
-                            gameSuggestions.map(suggestion => (
-                                <SearchResultEntry key={suggestion.id} entry={suggestion} />
-                            ))
+                            <>
+                                <span className="font-bold border-b pb-2 mb-2">Suggestions</span>
+                                {gameSuggestions.map(suggestion => (
+                                    <SearchResultEntry key={suggestion.id} entry={suggestion} />
+                                ))}
+                            </>
                         ) : (
                             <div className="text-center my-auto">
                                 <span className="font-bold">No suggestions to show</span>
@@ -94,6 +98,7 @@ export default function Search() {
     const [displayResults, setDisplayResults] = useState<boolean>(false);
     const [gameSearchResult, setGameSearchResult] = useState<Array<ReducedGameDetails>>([]);
     const [isPending, startTransition] = useTransition()
+    const pathname = usePathname();
 
     const accessTokenData = useAccessToken();
 
@@ -119,9 +124,34 @@ export default function Search() {
         }
       };
     }, []);
+
+    // Hide SearchResults when navigating away
+    useEffect(() => {
+        if (displayResults) setDisplayResults(false)
+    }, [pathname]);
+
+    // Manage Focus and Blur states
+    const handleFocus = () => {
+        setDisplayResults(true);
+    };
+    const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
+        if (e.relatedTarget && e.currentTarget.contains(e.relatedTarget)) return;
+        setDisplayResults(false);
+    };
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === 'Escape') {
+            setDisplayResults(false);
+        }
+    };
     
     return (
-        <div className="relative max-w-[360px] md:mx-auto">
+        <div
+            className="relative max-w-[360px] md:mx-auto"
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
+            tabIndex={-1}
+        >
             <div className="w-full flex items-center gap-2 rounded-full px-4 bg-gray-0 h-10 mt-6 border border-pink-200">
                 <SearchIcon className="stroke-gray-500" size={20} />
 
@@ -130,8 +160,6 @@ export default function Search() {
                     type="text"
                     placeholder="Search games..."
                     onChange={handleInputChange}
-                    onFocus={() => setDisplayResults(true)}
-                    onBlur={() => setDisplayResults(false)}
                 />
             </div>
 
