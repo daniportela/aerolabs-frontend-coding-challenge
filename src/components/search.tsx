@@ -17,16 +17,19 @@ import { getGamesBySlugOrSearchTerm } from "@/app/actions"
 
 // Utils
 import { cn } from "@/lib/utils"
-import { usePathname } from "next/navigation"
 
-function SearchResultEntry({ entry }: { entry: SimilarGame }) {
+function SearchResultEntry({ entry, handleClick }: { entry: SimilarGame, handleClick: () => void }) {
     function truncateText(text: string, maxLength: number) {
         if (text.length <= maxLength) return text;
         return text.slice(0, maxLength) + '...';
     }
 
     return (
-        <Link href={entry.slug!} className="grid grid-cols-[30px_1fr] p-1 rounded-sm items-center gap-3 hover:bg-pink-50">
+        <Link
+            href={entry.slug!}
+            className="grid grid-cols-[30px_1fr] p-1 rounded-sm items-center gap-3 hover:bg-pink-50"
+            onClick={handleClick}
+        >
             {
                 entry.cover ? (
                     <Image
@@ -49,7 +52,7 @@ function SearchResultEntry({ entry }: { entry: SimilarGame }) {
     )
 }
 
-function SearchResults({ results, isPending }: { results: Array<SimilarGame>, isPending: boolean }) {
+function SearchResults({ results, isPending, onResultClick }: { results: Array<SimilarGame>, isPending: boolean, onResultClick: () => void }) {
     const { getGameSuggestions, gameCollection } = useLocalStorageCtx();
 
     const gameSuggestions = getGameSuggestions();
@@ -71,14 +74,14 @@ function SearchResults({ results, isPending }: { results: Array<SimilarGame>, is
                 ) : (
                     !!results.length ? (
                         results.map(result => (
-                            <SearchResultEntry key={result.id} entry={result} />
+                            <SearchResultEntry key={result.id} entry={result} handleClick={onResultClick} />
                         ))
                     ) : (
                         !!gameCollection.length ? (
                             <>
                                 <span className="font-bold border-b pb-2 mb-2">Suggestions</span>
                                 {gameSuggestions.map(suggestion => (
-                                    <SearchResultEntry key={suggestion.id} entry={suggestion} />
+                                    <SearchResultEntry key={suggestion.id} entry={suggestion} handleClick={onResultClick} />
                                 ))}
                             </>
                         ) : (
@@ -98,7 +101,6 @@ export default function Search() {
     const [displayResults, setDisplayResults] = useState<boolean>(false);
     const [gameSearchResult, setGameSearchResult] = useState<Array<ReducedGameDetails>>([]);
     const [isPending, startTransition] = useTransition()
-    const pathname = usePathname();
 
     const accessTokenData = useAccessToken();
 
@@ -125,20 +127,19 @@ export default function Search() {
       };
     }, []);
 
-    // Hide SearchResults when navigating away
-    useEffect(() => {
-        if (displayResults) setDisplayResults(false)
-    }, [pathname]);
+    function closeResults() {
+        setDisplayResults(false)
+    }
 
     // Manage Focus and Blur states
-    const handleFocus = () => {
+    function handleFocus() {
         setDisplayResults(true);
     };
-    const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
+    function handleBlur(e: React.FocusEvent<HTMLDivElement>) {
         if (e.relatedTarget && e.currentTarget.contains(e.relatedTarget)) return;
         setDisplayResults(false);
     };
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    function handleKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
         if (e.key === 'Escape') {
             setDisplayResults(false);
         }
@@ -164,7 +165,13 @@ export default function Search() {
             </div>
 
             <AnimatePresence>
-                {displayResults && <SearchResults results={gameSearchResult} isPending={isPending} />}
+                {displayResults && (
+                    <SearchResults 
+                        results={gameSearchResult}
+                        isPending={isPending}
+                        onResultClick={closeResults}
+                    />
+                )}
             </AnimatePresence>
         </div>
     )
