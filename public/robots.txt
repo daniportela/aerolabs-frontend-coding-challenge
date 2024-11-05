@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://aerolabs-frontend-coding-challenge.vercel.app/
+
+# Sitemaps
+Sitemap: https://aerolabs-frontend-coding-challenge.vercel.app/sitemap.xml
