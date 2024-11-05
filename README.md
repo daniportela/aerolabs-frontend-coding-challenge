@@ -45,7 +45,7 @@ If you want to test locally, simply ```clone``` the repo, ```cd``` into the dire
 ### 🔍 SSR wherever possible. SEO friendly (good Web Vitals score) and performant
 > In this case SEO is a bit lower because robots.txt is set to ```x-robots-tag: noindex``` on Vercel Preview deployments.
 
-![Core Web Vitals](./readme-media/web-vitals.png)
+![Core Web Vitals](./readme-media/web-vitals.jpg)
 
 
 ## Caveats & things to improve
